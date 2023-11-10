@@ -20,24 +20,7 @@ You can remove this alias by either commenting out interfaces or adding the foll
 ```c
 #define HTTP_REQUEST
 ```
-## Fido Header API
-All APIs have interfaces that remove FIDO from the front. Example: FIDO_CREATE_HEADER becomes CREATE_HEADER.
-These interfaces can be negated by adding the same style define as the data structures.
-```c
-//Create A Header
-FIDO_HEADER *header = FIDO_CREATE_HEADER("key", "value");
 
-//Print A Header prints 'key:value'
-printf("%s:%s\n", header->key, header->value);
-
-//Update Key => newKey:value
-FIDO_SET_KEY(header, "newKey");
-//Update Value => newKey:newValue
-FIDO_SET_VALUE(header, "newValue");
-
-//Delete Header
-FIDO_FREE_HEADER(header);
-```
 ## Fido HTTP Request API
 Request objects are created and managed through the following.
 ```c
