@@ -73,6 +73,10 @@ FIDO_HEADER *foundHeader = FIDO_GET_HEADER(list, 0);
 //Get Header by Key
 FIDO_HEADER *foundByKey = FIDO_GET_HEADER_BY_KEY(list, "newKey");
 
+//Convert the Header list to a JSON Object
+// => {"newKey": "newValue"}
+char* headersAsJSON = FIDO_JSONIFY_HEADERS(list);
+
 //Delete Header by index note: Does NOT Free the memory of the removed header
 FIDO_REMOVE_HEADER(list, 0);
 

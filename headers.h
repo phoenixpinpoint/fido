@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <buffer/buffer.h>
+
 // ==== Data Structures  ====
 //FIDO HEADER Creates a Header object to be used in HTTP Calls
 typedef struct FIDO_HEADER {
@@ -67,6 +69,9 @@ void FIDO_REMOVE_HEADER_BY_KEY(FIDO_HEADERLIST *list, char* key);
 //Returns a header by key from a list.
 int FIDO_GET_HEADER_INDEX(FIDO_HEADERLIST *list, char* key);
 
+//Returns a JSON string of the header list.
+buffer_t* FIDO_JSONIFY_HEADERS(FIDO_HEADERLIST *list);
+
 //Prints the list to stdout
 void FIDO_PRINT_HEADER_LIST(FIDO_HEADERLIST *list);
 
@@ -116,6 +121,10 @@ void FIDO_FREE_HEADER_LIST(FIDO_HEADERLIST *list);
 
 #ifndef GET_HEADER_INDEX
   #define GET_HEADER_INDEX(list, key) FIDO_GET_HEADER_INDEX(list,key)
+#endif
+
+#ifndef JSONIFY_HEADERS
+  #define JSONIFY_HEADERS(list) FIDO_JSONIFY_HEADERS(list)
 #endif
 
 #ifndef PRINT_HEADER_LIST

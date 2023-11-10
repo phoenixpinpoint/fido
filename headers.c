@@ -213,6 +213,33 @@ int FIDO_GET_HEADER_INDEX(FIDO_HEADERLIST *list, char* key)
     }
 }
 
+//Returns a JSON string of the header list.
+buffer_t* FIDO_JSONIFY_HEADERS(FIDO_HEADERLIST *list)
+{
+  //All headers should be a key value pair of strings
+
+  //Create a buffer to store the new JSON String
+  buffer_t* jsonString = buffer_new();
+  //Add our json object open
+  buffer_append(jsonString, "{");
+  //For each header in the header list
+  for (int iteration = 0; iteration < list->length; iteration++)
+  {
+      buffer_append(jsonString, "\"");//create our first quote
+      buffer_append(jsonString, list->headers[iteration]->key);//add the key
+      buffer_append(jsonString, "\":\"");//add the closing quote for the key, the colon, and the openeing quote for the value
+      buffer_append(jsonString, list->headers[iteration]->value);//add the value
+      if(iteration != list->length-1)//If it is not the last item
+      {
+        buffer_append(jsonString, "\",");//add the closing quote and comma
+      } else {//if it is the last item
+        buffer_append(jsonString, "\"");//add only the closing quote
+      }
+  }
+  buffer_append(jsonString, "}");//Add the closing brace
+  return jsonString;//return the string
+}
+
 //Prints the list to stdout
 void FIDO_PRINT_HEADER_LIST(FIDO_HEADERLIST *list)
 {
