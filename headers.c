@@ -157,6 +157,7 @@ FIDO_HEADER* FIDO_GET_HEADER_BY_KEY(FIDO_HEADERLIST *list, char* key)
     else {
         return 0;
     }
+    return (FIDO_HEADER*)-1;
 }
 
 //Removes a header from the passed list at index. DOES NOT FREE
@@ -178,7 +179,7 @@ void FIDO_REMOVE_HEADER(FIDO_HEADERLIST *list, int index)
         }
 
         list->length = list->length - 1;
-        list->headers = (FIDO_HEADERLIST**)realloc(list->headers, list->length*sizeof(FIDO_HEADER*));
+        list->headers = (FIDO_HEADER**)realloc(list->headers, list->length*sizeof(FIDO_HEADER*));
     }
 
     return;
@@ -211,6 +212,7 @@ int FIDO_GET_HEADER_INDEX(FIDO_HEADERLIST *list, char* key)
     else {
         return -1;
     }
+    return -1;
 }
 
 //Returns a JSON string of the header list.
