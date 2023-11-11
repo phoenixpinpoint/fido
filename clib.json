@@ -9,7 +9,13 @@
         "clibs/buffer": "*"
     },
     "src": [
-        "src/*",
-        "docs/*"
+      "headers.h",
+      "headers.c",
+      "request.h",
+      "request.c",
+      "response.h",
+      "response.c",
+      "fido.h",
+      "fido.c"
     ]
 }

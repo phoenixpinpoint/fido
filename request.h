@@ -26,7 +26,7 @@ typedef struct FIDO_HTTP_REQUEST {
 
 // ====Public Functions ====
 //Create a new HTTP Request Structure
-FIDO_HTTP_REQUEST* FIDO_CREATE_HTTP_REQUEST(char* url, char* body, FIDO_HEADERLIST* list);
+FIDO_HTTP_REQUEST* FIDO_CREATE_HTTP_REQUEST(char* url, FIDO_HEADERLIST* list, char* body);
 
 //Free the request memory
 void FIDO_FREE_HTTP_REQUEST(FIDO_HTTP_REQUEST* req);

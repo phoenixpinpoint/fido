@@ -7,7 +7,7 @@
 #include "request.h"
 
 //Create a new HTTP Request Structure
-FIDO_HTTP_REQUEST* FIDO_CREATE_HTTP_REQUEST(char* url, char* body, FIDO_HEADERLIST* list)
+FIDO_HTTP_REQUEST* FIDO_CREATE_HTTP_REQUEST(char* url, FIDO_HEADERLIST* list, char* body)
 {
 	FIDO_HTTP_REQUEST *instance = (FIDO_HTTP_REQUEST*)malloc(sizeof(FIDO_HTTP_REQUEST));
 
