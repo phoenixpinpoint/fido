@@ -9,6 +9,7 @@
         "clibs/buffer": "*",
     },
     "src": [
-        "*"
+        "src/*",
+        "docs/*"
     ]
 }
