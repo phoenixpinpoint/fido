@@ -85,4 +85,4 @@ int main()
 }
 ```
 ## Additional Docs
-https://github.com/phoenixpinpoint/fido/tree/main/docs
+All Documents are on this main repo so check out the other .md files.
