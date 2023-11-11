@@ -26,7 +26,7 @@ typedef struct FIDO_HTTP_RESPONSE {
 
 // ====Public Functions ====
 //Create a HTTP Response Object
-FIDO_HTTP_RESPONSE* FIDO_CREATE_HTTP_RESPONSE(long response_code, char* body, FIDO_HEADERLIST* list);
+FIDO_HTTP_RESPONSE* FIDO_CREATE_HTTP_RESPONSE(int response_code, char* body, FIDO_HEADERLIST* list);
 
 //Free the HTTP Response Memory
 void FIDO_FREE_HTTP_RESPONSE(FIDO_HTTP_RESPONSE* res);

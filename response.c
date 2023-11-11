@@ -7,11 +7,11 @@
 #include "response.h"
 
 //Create a HTTP Response Object
-FIDO_HTTP_RESPONSE* FIDO_CREATE_HTTP_RESPONSE(long response_code, char* body, FIDO_HEADERLIST* list)
+FIDO_HTTP_RESPONSE* FIDO_CREATE_HTTP_RESPONSE(int response_code, char* body, FIDO_HEADERLIST* list)
 {
   FIDO_HTTP_RESPONSE *instance = (FIDO_HTTP_RESPONSE*)malloc(sizeof(FIDO_HTTP_RESPONSE));
 
-	instance->response_code = 0;
+	instance->response_code = response_code;
 
 	instance->body = (char*)malloc(strlen(body)+1*sizeof(char));
 	strncpy(instance->body, body, strlen(body)+1);

@@ -15,11 +15,27 @@ FIDO_HTTP_REQUEST* FIDO_CREATE_HTTP_REQUEST(char* url, char* body, FIDO_HEADERLI
 	strncpy(instance->url, url, strlen(url)+1);
 	instance->url[strlen(instance->url)] = '\0';
 
-	instance->body = (char*)malloc(strlen(body)+1*sizeof(char));
-	strncpy(instance->body, body, strlen(body)+1);
-	instance->body[strlen(instance->body)] = '\0';
+	if(body)
+	{
+		instance->body = (char*)malloc(strlen(body)+1*sizeof(char));
+		strncpy(instance->body, body, strlen(body)+1);
+		instance->body[strlen(instance->body)] = '\0';
+	}
+	else
+	{
+		instance->body = NULL;
+	}
 
-	instance->headers = list;
+	if(list)
+	{
+		instance->headers = list;
+	}
+	else
+	{
+		instance->headers = NULL;
+	}
+
+
 	return instance;
 }
 
