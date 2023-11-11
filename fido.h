@@ -46,4 +46,8 @@ FIDO_HTTP_RESPONSE* FIDO_DELETE(FIDO_HTTP_REQUEST* req);
   #define HTTP_PATCH(req) FIDO_PATCH(req)
 #endif
 
+#ifndef HTTP_DELETE
+  #define HTTP_DELETE(req) FIDO_DELETE(req)
+#endif
+
 #endif
