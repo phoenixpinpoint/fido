@@ -25,7 +25,7 @@ You can remove this alias by either commenting out interfaces or adding the foll
 Request objects are created and managed through the following.
 ```c
 //Create a new HTTP Request note: Assumes headers is a valid header list
-FIDO_HTTP_REQUEST *req = FIDO_CREATE_HTTP_REQUEST("http://example.com", NULL, headers);
+FIDO_HTTP_REQUEST *req = FIDO_CREATE_HTTP_REQUEST("http://example.com", headers, NULL);
 
 //You can set the body by
 FIDO_HTTP_REQUEST_BODY(req, "SOME NEW BODY VALUE");
