@@ -1,0 +1,15 @@
+{
+    "name": "fido",
+    "version": "0.1.1",
+    "repo": "phoenixpinpoint/fido",
+    "description": "Fido provides JS Fetch API bindings in C for use in WASM. Additionally Fido provides a simple Header, Request and, Response API",
+    "keywords": ["Web Development", "WebAssembly", "WASM", "REST", "JS", "javascript"],
+    "license": "GPLv3",
+    "dependencies": {
+        "clibs/buffer": "*",
+    },
+    "src": [
+        "src/*",
+        "docs/*"
+    ]
+}
