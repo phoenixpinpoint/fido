@@ -6,7 +6,8 @@
     "keywords": ["Web Development", "WebAssembly", "WASM", "REST", "JS", "javascript"],
     "license": "GPLv3",
     "dependencies": {
-        "clibs/buffer": "*"
+        "clibs/buffer": "*",
+        "kgabis/parson": "*"
     },
     "src": [
       "headers.h",
