@@ -24,6 +24,9 @@ FIDO_HTTP_RESPONSE* FIDO_GET(FIDO_HTTP_REQUEST* req);
 //HTTP POST for JS Fetch API
 FIDO_HTTP_RESPONSE* FIDO_POST(FIDO_HTTP_REQUEST* req);
 
+//HTTP PATCH for JS Fetch API
+FIDO_HTTP_RESPONSE* FIDO_PATCH(FIDO_HTTP_REQUEST* req);
+
 
 // ==== Function Interfaces ====
 #ifndef HTTP_GET
@@ -32,6 +35,10 @@ FIDO_HTTP_RESPONSE* FIDO_POST(FIDO_HTTP_REQUEST* req);
 
 #ifndef HTTP_POST
   #define HTTP_POST(req) FIDO_POST(req)
+#endif
+
+#ifndef HTTP_PATCH
+  #define HTTP_PATCH(req) FIDO_PATCH(req)
 #endif
 
 #endif
