@@ -1,8 +1,5 @@
 #include "fido.h"
 
-#include <buffer/buffer.c>
-#include <parson/parson.c>
-
 #include "headers.c"
 #include "request.c"
 #include "response.c"
