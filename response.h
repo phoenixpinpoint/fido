@@ -34,4 +34,17 @@ void FIDO_FREE_HTTP_RESPONSE(FIDO_HTTP_RESPONSE* res);
 //Set the HTTP Response body
 void FIDO_SET_HTTP_RESPONSE_BODY(FIDO_HTTP_RESPONSE* res, char* body);
 
+// ==== Function Interfaces ====
+#ifndef CREATE_HTTP_RESPONSE
+  #define CREATE_HTTP_RESPONSE(response_code, body, headerlist) FIDO_CREATE_HTTP_RESPONSE(response_code, body, headerlist)
+#endif
+
+#ifndef FREE_HTTP_RESPONSE
+  #define FREE_HTTP_RESPONSE(res) FIDO_FREE_HTTP_RESPONSE(res)
+#endif
+
+#ifndef SET_HTTP_RESPONSE_BODY
+  #define FIDO_SET_HTTP_RESPONSE_BODY(res, body) SET_HTTP_RESPONSE_BODY(res, body)
+#endif
+
 #endif
