@@ -1,9 +1,5 @@
 #include "fido.h"
 
-#include "headers.c"
-#include "request.c"
-#include "response.c"
-
 EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char* body), {
   let init = {};//HTTP Init Object
 
