@@ -10,13 +10,13 @@
         "kgabis/parson": "*"
     },
     "src": [
-      "headers.h",
-      "headers.c",
-      "request.h",
-      "request.c",
-      "response.h",
-      "response.c",
-      "fido.h",
-      "fido.c"
+      "src/headers.h",
+      "src/headers.c",
+      "src/request.h",
+      "src/request.c",
+      "src/response.h",
+      "src/response.c",
+      "src/fido.h",
+      "src/fido.c"
     ]
 }
