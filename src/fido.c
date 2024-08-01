@@ -74,7 +74,7 @@ EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char
   return responseBuffer;
 });
 
-/*
+
 //HTTP Get for JS Fetch API
 FIDO_HTTP_RESPONSE* FIDO_GET(FIDO_HTTP_REQUEST* req)
 {
@@ -353,4 +353,4 @@ FIDO_HTTP_RESPONSE* FIDO_DELETE(FIDO_HTTP_REQUEST* req)
 
   //Will either return an empty res or a created res
   return res;
-}*/
+}
