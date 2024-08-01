@@ -34,6 +34,8 @@ void FIDO_FREE_HTTP_RESPONSE(FIDO_HTTP_RESPONSE* res);
 //Set the HTTP Response body
 void FIDO_SET_HTTP_RESPONSE_BODY(FIDO_HTTP_RESPONSE* res, char* body);
 
+//TODO: Add a function to convert the JSON from a FETCH call to a FIDO_HTTP_RESPONSE OBJECT
+
 // ==== Function Interfaces ====
 #ifndef CREATE_HTTP_RESPONSE
   #define CREATE_HTTP_RESPONSE(response_code, body, headerlist) FIDO_CREATE_HTTP_RESPONSE(response_code, body, headerlist)

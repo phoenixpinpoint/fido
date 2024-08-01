@@ -29,12 +29,9 @@ gcc ..-Ideps..-Ideps/fido/src
 ```
 ### compilation and testing
 This section only applies for the project as a standalone. Compiling Fido as a standalone project with emscripten.
+- Note: If you are running WASM/Emscripten tests you *MUST* be using a node version that supports the Fetch API.
 ```bash
-make fido
-```
-Running with Node.js (Mostly for testing)
-```bash
-node fido
+make test
 ```
 ## Use
 ### Simple GET

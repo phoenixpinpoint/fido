@@ -3,14 +3,19 @@
 EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char* body), {
   let init = {};//HTTP Init Object
 
+  let buffer;
+
   //If a method is supplied
   if (httpMethod)
   {
     init["method"] = UTF8ToString(httpMethod);//Set the method
   }
   else//if not return an error.
-  {
-    return allocate(intArrayFromString("HTTP_REQ_ERROR: No method specified."),ALLOC_NORMAL);
+  {  
+  	let messageBuffer = intArrayFromString("HTTP_REQ_ERROR: No method specified.");
+	let returnMessage = Module._malloc(2*messageBuffer.length);
+	Module.HEAPU8.set(messageBuffer, returnMessage);
+   	return returnMessage;	
   }
 
   //If headers are supplied
@@ -21,7 +26,11 @@ EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char
     }
     catch {
       //If parsing fails send an error
-      return allocate(intArrayFromString("HTTP_REQ_ERROR: failed to parse header json."),ALLOC_NORMAL);
+      //This block should be a helper function in JS
+	  let messageBuffer = intArrayFromString("HTTP_REQ_ERROR: failed to parse header json.");
+	  let returnMessage = Module._malloc(2*messageBuffer.length);
+	  Module.HEAPU8.set(messageBuffer, returnMessage);
+	  return returnMessage;
     }
   }
 
@@ -34,6 +43,7 @@ EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char
   //Call fetch
   let rawResponse = await fetch(UTF8ToString(url), init);
 
+  
   //Iterate through the Headers and create a clean headers object
   let resHeaders = [];
   rawResponse.headers.forEach((value, key) => {
@@ -58,9 +68,13 @@ EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char
   let responseString = JSON.stringify(responseObject);
 
   //Allocate the Memory in the LLVM stack and set it to the responseString
-  return allocate(intArrayFromString(responseString),ALLOC_NORMAL);
+  responseString = intArrayFromString(responseString);
+  let responseBuffer = Module._malloc(2*responseString.length);
+  Module.HEAPU8.set(responseString, responseBuffer);
+  return responseBuffer;
 });
 
+/*
 //HTTP Get for JS Fetch API
 FIDO_HTTP_RESPONSE* FIDO_GET(FIDO_HTTP_REQUEST* req)
 {
@@ -339,4 +353,4 @@ FIDO_HTTP_RESPONSE* FIDO_DELETE(FIDO_HTTP_REQUEST* req)
 
   //Will either return an empty res or a created res
   return res;
-}
+}*/
