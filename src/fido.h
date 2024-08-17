@@ -7,12 +7,6 @@
 #ifndef FIDO_H
 #define FIDO_H
 
-#ifndef USE_LIBCURL
-#include <emscripten.h>
-#else 
-#include <curl/curl.h> 
-#endif
-
 #include <parson/parson.h>
 
 #include "headers.h"

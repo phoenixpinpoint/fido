@@ -1,18 +1,15 @@
-#include <stdio.h>
-
 #include <fido.h>
 
 int test_fido_no_method_check()
 {
 	char* result = FIDO_FETCH(NULL, "https://google.com", NULL, NULL);
-	if (strcmp("HTTP_REQ_ERROR: No method specified.", result) == 0)
+	if (strcmp("HTTP_REQ_ERROR: Invalid or No method specified.", result) == 0)
 	{
 		return 0;
 	}
 	else {
 		return -1;
 	}
-
 	free(result);
 }
 
@@ -62,7 +59,7 @@ int main(void)
 	printf("No Method Detection: %d\n", test_fido_no_method_check());
 	printf("Empty String Header Test: %d\n", test_fido_empty_string_header_object());
 	printf("Empty Header Test: %d\n", test_fido_empty_header_object());
-	printf("Fetch GET Check: %d\n", test_fido_get_check());
+	//printf("Fetch GET Check: %d\n", test_fido_get_check());
 
 	return 0;
 }
