@@ -8,7 +8,6 @@
 #include "curl.c"
 #endif
 
-
 //HTTP Get for JS Fetch 
 FIDO_HTTP_RESPONSE* FIDO_GET(FIDO_HTTP_REQUEST* req)
 {
@@ -27,7 +26,6 @@ FIDO_HTTP_RESPONSE* FIDO_GET(FIDO_HTTP_REQUEST* req)
 
   //FIDO_FETCH always returns a string which is a stringified response from JS.
   char* rawResponse = FIDO_FETCH("GET", req->url, headersAsString, req->body);
-
 
   //Create a Parson Root
   JSON_Value *responseRoot = json_parse_string(rawResponse);
@@ -79,6 +77,7 @@ FIDO_HTTP_RESPONSE* FIDO_GET(FIDO_HTTP_REQUEST* req)
   return res;
 }
 
+
 //HTTP POST for JS Fetch API
 FIDO_HTTP_RESPONSE* FIDO_POST(FIDO_HTTP_REQUEST* req)
 {
@@ -117,7 +116,7 @@ FIDO_HTTP_RESPONSE* FIDO_POST(FIDO_HTTP_REQUEST* req)
     for (int i = 0; i< json_array_get_count(headersArray); i++)
     {
       //Get the raw header
-      JSON_Object *rawHeader = json_array_get_object(headersArray, i);
+	  JSON_Object *rawHeader = json_array_get_object(headersArray, i);
 
       //Get the Key from the header
       buffer_t* keyBuffer = buffer_new();
@@ -237,7 +236,6 @@ FIDO_HTTP_RESPONSE* FIDO_DELETE(FIDO_HTTP_REQUEST* req)
 
   //FIDO_FETCH always returns a string which is a stringified response from JS.
   char* rawResponse = FIDO_FETCH("DELETE", req->url, headersAsString, req->body);
-
 
   //Create a Parson Root
   JSON_Value *responseRoot = json_parse_string(rawResponse);

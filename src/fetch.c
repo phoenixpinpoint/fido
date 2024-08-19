@@ -2,6 +2,11 @@
 
 #include <emscripten.h>
 
+void FIDO_CLEAN()
+{
+	return;
+}
+
 EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char* body), {
   let init = {};//HTTP Init Object
 
@@ -69,10 +74,11 @@ EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char
   //Stringify it to send it back the FIDO_FETCH function.
   let responseString = JSON.stringify(responseObject);
 
+  //console.log(responseString);
+
   //Allocate the Memory in the LLVM stack and set it to the responseString
   responseString = intArrayFromString(responseString);
   let responseBuffer = Module._malloc(2*responseString.length);
   Module.HEAPU8.set(responseString, responseBuffer);
   return responseBuffer;
 });
-

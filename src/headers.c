@@ -77,7 +77,7 @@ void FIDO_SET_KEY(FIDO_HEADER *h, char* key)
 }
 
 //Sets the value of a FIDO Header
-void SET_VALUE(FIDO_HEADER *h, char* value)
+void FIDO_SET_VALUE(FIDO_HEADER *h, char* value)
 {
     //If there is a value string free it
     if(h->value)

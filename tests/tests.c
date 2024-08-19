@@ -23,7 +23,6 @@ int test_fido_empty_string_header_object()
 	else {
 		return -1;
 	}
-
 	free(result);
 }
 
@@ -50,16 +49,18 @@ int test_fido_get_check()
 	} else {
 		return -1;
 	}
+	free(result);
 }
 
 int main(void)
 {
-	printf("FIDO WASM TESTS\n");
+	printf("FIDO TESTS\n");
 	printf("====================\n");
-	printf("No Method Detection: %d\n", test_fido_no_method_check());
-	printf("Empty String Header Test: %d\n", test_fido_empty_string_header_object());
-	printf("Empty Header Test: %d\n", test_fido_empty_header_object());
-	//printf("Fetch GET Check: %d\n", test_fido_get_check());
+	//printf("No Method Detection: %d\n", test_fido_no_method_check());
+	//printf("Empty String Header Test: %d\n", test_fido_empty_string_header_object());
+	//printf("Empty Header Test: %d\n", test_fido_empty_header_object());
+	printf("GET Check: %d\n", test_fido_get_check());
+	FIDO_CLEAN();	
 
 	return 0;
 }

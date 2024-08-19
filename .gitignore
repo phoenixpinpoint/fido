@@ -77,4 +77,4 @@ survey.c
 surveyor
 
 *.wasm
-tests/wasm/*.js
+./tests/tests.js

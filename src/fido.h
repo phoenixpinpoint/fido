@@ -7,6 +7,7 @@
 #ifndef FIDO_H
 #define FIDO_H
 
+#include <buffer/buffer.h>
 #include <parson/parson.h>
 
 #include "headers.h"
@@ -16,6 +17,8 @@
 // ==== Public Functions ===
 //Calls the JS Fetch with params, which returns a JSON object as string.
 char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body);
+
+void FIDO_CLEAN();
 
 //HTTP Get for JS Fetch API
 FIDO_HTTP_RESPONSE* FIDO_GET(FIDO_HTTP_REQUEST* req);
@@ -31,6 +34,13 @@ FIDO_HTTP_RESPONSE* FIDO_PATCH(FIDO_HTTP_REQUEST* req);
 
 //HTTP DELETE for JS Fetch API
 FIDO_HTTP_RESPONSE* FIDO_DELETE(FIDO_HTTP_REQUEST* req);
+
+
+#ifdef USE_LIBCURL
+//char* CGET();
+//FIDO_HEADERLIST* FIDO_PARSE_CURL_HEADERS(char* rawHeaders);
+#endif
+
 
 // ==== Function Interfaces ====
 #ifndef HTTP_GET
