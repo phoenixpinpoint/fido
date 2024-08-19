@@ -78,3 +78,4 @@ surveyor
 
 *.wasm
 ./tests/tests.js
+./tests/tests
