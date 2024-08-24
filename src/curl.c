@@ -168,6 +168,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	buffer_t* valueBuff = buffer_new();
 	FIDO_HEADER* tempHeader = 0;
 	buffer_t* responseCodeAsString;
+	char* tempBuffer;
 
 	//printf("RAW HEADERS: %s\n", rawHeaders);
 
@@ -180,7 +181,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 			if(strncmp(rawHeaders, "HTTP/1.0", 8) == 0)
 			{
 				//printf("HTTP 1.0\n");
-				char* tempBuffer = (char*)calloc(3, sizeof(char));
+				tempBuffer = (char*)calloc(3, sizeof(char));
 				char* modifiedHeaders = &rawHeaders[9];
 			   	strncpy(tempBuffer, modifiedHeaders, 3);
 				responseCodeAsString = buffer_new_with_string(tempBuffer);
@@ -188,7 +189,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 			else if(strncmp(rawHeaders, "HTTP/1.1", 8) == 0)
 			{
 				//printf("HTTP 1.1\n");
-				char* tempBuffer = (char*)calloc(3, sizeof(char));
+				tempBuffer = (char*)calloc(3, sizeof(char));
 				char* modifiedHeaders = &rawHeaders[9];
 			   	strncpy(tempBuffer, modifiedHeaders, 3);
 				responseCodeAsString = buffer_new_with_string(tempBuffer);
@@ -196,7 +197,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 			else if(strncmp(rawHeaders, "HTTP/2", 6) ==0)
 			{
 				//printf("HTTP 2\n");
-				char* tempBuffer = (char*)calloc(3, sizeof(char));
+				tempBuffer = (char*)calloc(3, sizeof(char));
 				char* modifiedHeaders = &rawHeaders[7];
 			   	strncpy(tempBuffer, modifiedHeaders, 3);
 				responseCodeAsString = buffer_new_with_string(tempBuffer);
@@ -288,10 +289,19 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	printf("SERIALIZING HEADERS \n");
 	char *serialized_string = NULL;
 	serialized_string = json_serialize_to_string(responseJSON);
+	json_value_free(responseJSON);
 	//printf("REPLY AS STRING %s\n", serialized_string);
 
    	curl_easy_cleanup(curl);
+	buffer_free(keyBuff);
+	buffer_free(valueBuff);
 	buffer_free(headersAsJSONString);
+	for(int h = 0; h < headerList->length; h++)
+	{
+		FIDO_FREE_HEADER(headerList->headers[h]);
+	}
+	FIDO_FREE_HEADER_LIST(headerList);
+	free(tempBuffer);
 	//free(responseCodeAsString);
 
 	return serialized_string;
