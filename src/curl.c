@@ -134,6 +134,15 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	{
 		//printf("POST\n");
 		curl_easy_setopt(curl, CURLOPT_POST, 1L);
+		//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+		//HTTP makes a POST request with a body go to HTTP 100 CONTINUE, This allows us to skip that.
+		if (!body)
+		{
+			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "");
+		}
+		else {
+			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body);
+		}	
 	}
 	else if(httpMethod && strcmp(httpMethod, "PATCH") == 0)
 	{
@@ -153,6 +162,8 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	//printf("Executing cURL Request\n");
     // Perform the request, res gets the return code 
     res = curl_easy_perform(curl);
+
+	//printf("End of cURL Request\n");
 
     //Check for errors
     if(res != CURLE_OK)
@@ -205,7 +216,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 			{
 				return("HTTP_REQ_ERROR: Unable to determine HTTP type.");
 			}
-			printf("Status:%s\n", responseCodeAsString->data);
+			//printf("Status:%s\n", responseCodeAsString->data);
 		}
 
 		if((int)rawHeaders[i] == COLON)
@@ -274,18 +285,18 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 		}
 	}
 
-	printf("RAW HEADERS PROCESSED\n");
+	//printf("RAW HEADERS PROCESSED\n");
 	FIDO_PRINT_HEADER_LIST(headerList);
 	buffer_t* headersAsJSONString = FIDO_JSONIFY_HEADERS(headerList);
-	//printf("HEADERS %s\n", headersAsJSONString->data);
-	printf("CONVERTING HEADERS TO JSON\n");
+	//nitf("HEADERS %s\n", headersAsJSONString->data);
+	//printf("CONVERTING HEADERS TO JSON\n");
 	JSON_Value *responseJSON  = json_value_init_object();
 	JSON_Object *root_object = json_value_get_object(responseJSON);	
 	json_object_set_string(root_object, "code", responseCodeAsString->data);
 	json_object_set_value(root_object, "headers", json_parse_string(headersAsJSONString->data));
 	json_object_set_string(root_object, "body", responseBody);
 
-	printf("SERIALIZING HEADERS \n");
+	//printf("SERIALIZING HEADERS \n");
 	char *serialized_string = NULL;
 	serialized_string = json_serialize_to_string(responseJSON);
 	//printf("REPLY AS STRING %s\n", serialized_string);

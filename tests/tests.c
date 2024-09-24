@@ -42,7 +42,7 @@ int test_fido_empty_header_object()
 //Fetch needed for this test
 int test_fido_get_check()
 {
-	char* result = FIDO_FETCH("GET", "https://google.com", NULL, NULL);
+	char* result = FIDO_FETCH("GET", "http://localhost:3000", NULL, NULL);
 	if(strlen(result) > 100)//100 as picked based on most status codes in fido are less than 100 characters.
 	{
 		return 0;
@@ -52,6 +52,19 @@ int test_fido_get_check()
 	free(result);
 }
 
+int test_fido_post_check()
+{
+	char* result = FIDO_FETCH("POST", "http://localhost:3000/simple", NULL, NULL);
+	if(strlen(result) > 1)//100 as picked based on most status codes in fido are less than 100 characters.
+	{
+		return 0;
+	} else {
+		return -1;
+	}
+	free(result);
+}
+
+
 int main(void)
 {
 	printf("FIDO TESTS\n");
@@ -59,7 +72,8 @@ int main(void)
 	//printf("No Method Detection: %d\n", test_fido_no_method_check());
 	//printf("Empty String Header Test: %d\n", test_fido_empty_string_header_object());
 	//printf("Empty Header Test: %d\n", test_fido_empty_header_object());
-	printf("GET Check: %d\n", test_fido_get_check());
+	//printf("GET Check: %d\n", test_fido_get_check());
+	printf("POST Check: %d\n", test_fido_post_check());
 	FIDO_CLEAN();	
 
 	return 0;
