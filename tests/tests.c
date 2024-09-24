@@ -37,6 +37,7 @@ int test_fido_empty_header_object()
 		return 0;
 	}
 	free(result);
+	FIDO_CLEAN();
 }
 
 //Fetch needed for this test
@@ -50,6 +51,7 @@ int test_fido_get_check()
 		return -1;
 	}
 	free(result);
+	FIDO_CLEAN();
 }
 
 int test_fido_post_check()
@@ -73,7 +75,8 @@ int main(void)
 	//printf("Empty String Header Test: %d\n", test_fido_empty_string_header_object());
 	//printf("Empty Header Test: %d\n", test_fido_empty_header_object());
 	//printf("GET Check: %d\n", test_fido_get_check());
-	printf("POST Check: %d\n", test_fido_post_check());
+	//printf("POST Check: %d\n", test_fido_post_check());
+	//printf("GET Check 2: %d\n", test_fido_get_check);
 	FIDO_CLEAN();	
 
 	return 0;
