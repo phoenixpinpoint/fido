@@ -44,7 +44,7 @@ size_t writeFunction(void *ptr, size_t size, size_t nmemb, void *stream) {
 		{
 			return -1;
 		}
-		strncpy(responseBody, ptr, nmemb);
+		strncpy(responseBody, ptr, nmemb+1);//+1 to include the null terminator
 	}
 	else {
 		//printf("RESIZING BUFFER\n");
@@ -73,7 +73,6 @@ size_t writeHeadersFunction(void *ptr, size_t size, size_t nmemb, void *stream) 
 		{
 			return -1;
 		}
-		//TODO Figure out why the +1 is needed? Is it really becuase of the null terminator?
 		strncpy(rawHeaders, ptr, nmemb+1);//+1 to include the null terminator
 		//printf("**%s\n**", rawHeaders);
 	}

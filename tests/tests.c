@@ -114,6 +114,23 @@ int test_fido_post_body()
 	FIDO_CLEAN();
 }
 
+int test_fido_patch()
+{
+	char* result = FIDO_FETCH("PATCH", "http://localhost:3000/14", "{\"Content-Type\": \"application/json\"}", "{\"name\":\"John\"}");
+	printf("Result: %s\n", result);
+	JSON_Value* json = json_parse_string(result);
+	JSON_Object* obj = json_value_get_object(json);
+	char* status = json_object_get_string(obj, "code");
+	if(strcmp(json_object_get_string(obj, "code"), "200") == 0)
+	{
+		return 0;
+	} else {
+		return -1;
+	}
+	free(result);
+	free(status);
+	FIDO_CLEAN();
+}
 
 int main(void)
 {
@@ -127,6 +144,7 @@ int main(void)
 	printf("GET Check 2: %d\n", test_fido_get_check());
 	printf("POST 400 Check: %d\n", test_fido_post_400_check());
 	printf("POST Body Check: %d\n", test_fido_post_body());
+	printf("PATCH Check: %d\n", test_fido_patch());
 	FIDO_CLEAN();	
 
 	return 0;
