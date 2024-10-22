@@ -16,6 +16,8 @@
       "src/request.c",
       "src/response.h",
       "src/response.c",
+      "src/fetch.h",
+      "src/curl.c",
       "src/fido.h",
       "src/fido.c"
     ]
