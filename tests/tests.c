@@ -156,6 +156,20 @@ int test_fido_post_with_f_headers()
 	JSON_Object* obj = json_value_get_object(json);
 	if(json_object_get_number(obj, "code") ==  200)
 	{
+		FIDO_FREE_HEADER_LIST(list);
+		return 0;
+	} else {
+		return -1;
+	}
+}
+
+int test_fido_response_json()
+{
+	char* result = FIDO_FETCH("GET", "http://localhost:3000", NULL, NULL);
+	FIDO_HTTP_RESPONSE* response = FIDO_CREATE_HTTP_RESPONSE_FROM_JSON(result);
+	if(response->response_code == 200)
+	{
+		FIDO_FREE_HTTP_RESPONSE(response);
 		return 0;
 	} else {
 		return -1;
@@ -177,6 +191,7 @@ int main(void)
 	printf("PATCH Check: %d\n", test_fido_patch());
 	printf("DELETE Check: %d\n", test_fido_delete());
 	printf("POST Fido Headers: %d\n", test_fido_post_with_f_headers());
+	printf("Response JSON: %d\n", test_fido_response_json());
 	FIDO_CLEAN();	
 
 	return 0;

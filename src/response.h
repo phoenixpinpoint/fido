@@ -28,6 +28,9 @@ typedef struct FIDO_HTTP_RESPONSE {
 //Create a HTTP Response Object
 FIDO_HTTP_RESPONSE* FIDO_CREATE_HTTP_RESPONSE(int response_code, char* body, FIDO_HEADERLIST* list);
 
+//Create an HTTP Response Object from a JSON string
+FIDO_HTTP_RESPONSE* FIDO_CREATE_HTTP_RESPONSE_FROM_JSON(char* json);
+
 //Free the HTTP Response Memory
 void FIDO_FREE_HTTP_RESPONSE(FIDO_HTTP_RESPONSE* res);
 
