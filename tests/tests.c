@@ -46,56 +46,48 @@ int test_fido_empty_header_object()
 int test_fido_get_check()
 {
 	char* result = FIDO_FETCH("GET", "http://localhost:3000", NULL, NULL);
-	printf(result);
-	//CURL Returns an Object with sub objects for headers
-	//JS Fetch Returns an Array with objects for headers
+	printf("RES: %s\n", result);
 	JSON_Value* json = json_parse_string(result);
 	JSON_Object* obj = json_value_get_object(json);
-	char* status = json_object_get_string(obj, "code");
-	if(strcmp(json_object_get_string(obj, "code"), "200") == 0)
+	if(json_object_get_number(obj, "code") ==  200)
 	{
 		return 0;
 	} else {
 		return -1;
 	}
 	free(result);
-	free(status);
 	FIDO_CLEAN();
 }
 
 int test_fido_post_check()
 {
 	char* result = FIDO_FETCH("POST", "http://localhost:3000/simple", NULL, NULL);
-	//printf(result);
+	printf(result);
 	JSON_Value* json = json_parse_string(result);
 	JSON_Object* obj = json_value_get_object(json);
-	char* status = json_object_get_string(obj, "code");
-	if(strcmp(json_object_get_string(obj, "code"), "200") == 0)
+	if(json_object_get_number(obj, "code") ==  200)
 	{
 		return 0;
 	} else {
 		return -1;
 	}
 	free(result);
-	free(status);
 	FIDO_CLEAN();
 }
 
 int test_fido_post_400_check()
 {
 	char* result = FIDO_FETCH("POST", "http://localhost:3000/complex", NULL, NULL);
-	//printf("Result: %s\n", result);
+	printf("Result: %s\n", result);
 	JSON_Value* json = json_parse_string(result);
 	JSON_Object* obj = json_value_get_object(json);
-	char* status = json_object_get_string(obj, "code");
-	if(strcmp(json_object_get_string(obj, "code"), "400") == 0)
+	if(json_object_get_number(obj, "code") ==  400)
 	{
 		return 0;
 	} else {
 		return -1;
 	}
 	free(result);
-	free(status);
 	FIDO_CLEAN();
 }
 
@@ -105,15 +97,13 @@ int test_fido_post_body()
 	//printf("Result: %s\n", result);
 	JSON_Value* json = json_parse_string(result);
 	JSON_Object* obj = json_value_get_object(json);
-	char* status = json_object_get_string(obj, "code");
-	if(strcmp(json_object_get_string(obj, "code"), "200") == 0)
+	if(json_object_get_number(obj, "code") ==  200)
 	{
 		return 0;
 	} else {
 		return -1;
 	}
 	free(result);
-	free(status);
 	FIDO_CLEAN();
 }
 
@@ -123,15 +113,13 @@ int test_fido_patch()
 	//printf("Result: %s\n", result);
 	JSON_Value* json = json_parse_string(result);
 	JSON_Object* obj = json_value_get_object(json);
-	char* status = json_object_get_string(obj, "code");
-	if(strcmp(json_object_get_string(obj, "code"), "200") == 0)
+	if(json_object_get_number(obj, "code") ==  200)
 	{
 		return 0;
 	} else {
 		return -1;
 	}
 	free(result);
-	free(status);
 	FIDO_CLEAN();
 }
 
@@ -140,15 +128,13 @@ int test_fido_delete()
 	char* result = FIDO_FETCH("DELETE", "http://localhost:3000/14", NULL, NULL);
 	JSON_Value* json = json_parse_string(result);
 	JSON_Object* obj = json_value_get_object(json);
-	char* status = json_object_get_string(obj, "code");
-	if(strcmp(json_object_get_string(obj, "code"), "200") == 0)
+	if(json_object_get_number(obj, "code") ==  200)
 	{
 		return 0;
 	} else {
 		return -1;
 	}
 	free(result);
-	free(status);
 	FIDO_CLEAN();
 }
 
@@ -161,8 +147,7 @@ int test_fido_post_with_f_headers()
 	//printf("Result: %s\n", result);
 	JSON_Value* json = json_parse_string(result);
 	JSON_Object* obj = json_value_get_object(json);
-	char* status = json_object_get_string(obj, "code");
-	if(strcmp(json_object_get_string(obj, "code"), "200") == 0)
+	if(json_object_get_number(obj, "code") ==  200)
 	{
 		return 0;
 	} else {
@@ -178,7 +163,7 @@ int main(void)
 	// printf("Empty String Header Test: %d\n", test_fido_empty_string_header_object());
 	// printf("Empty Header Test: %d\n", test_fido_empty_header_object());
 	printf("GET Check: %d\n", test_fido_get_check());
-	// printf("POST Check: %d\n", test_fido_post_check());
+	//printf("POST Check: %d\n", test_fido_post_check());
 	// printf("GET Check 2: %d\n", test_fido_get_check());
 	// printf("POST 400 Check: %d\n", test_fido_post_400_check());
 	// printf("POST Body Check: %d\n", test_fido_post_body());

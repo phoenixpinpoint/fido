@@ -132,7 +132,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 			buffer_append(headerBuffer, ": ");
 			buffer_append(headerBuffer, value);
 			//printf("Header: %s\n", headerBuffer->data);
-			hs = curl_slist_append(hs, "Content-Type: application/json");
+			hs = curl_slist_append(hs, headerBuffer->data);
 			buffer_free(headerBuffer);
 		}
 		json_value_free(root);
@@ -321,7 +321,8 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	buffer_t* headersAsJSONString = FIDO_JSONIFY_HEADERS(headerList);
 	JSON_Value *responseJSON  = json_value_init_object();
 	JSON_Object *root_object = json_value_get_object(responseJSON);
-	json_object_set_string(root_object, "code", responseCodeAsString->data);
+	double responseCode = atof(responseCodeAsString->data);
+	json_object_set_number(root_object, "code", responseCode);
 	json_object_set_value(root_object, "headers", json_parse_string(headersAsJSONString->data));
 	json_object_set_string(root_object, "body", responseBody);
 
