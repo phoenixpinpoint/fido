@@ -189,6 +189,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 		if(i == 0)
 		{
 			//printf("Processing Status Code\n");
+			printf("RAW HEADERS: %s\n", rawHeaders);
 			if(strncmp(rawHeaders, "HTTP/1.0", 8) == 0)
 			{
 				//printf("HTTP 1.0\n");
@@ -307,6 +308,8 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	buffer_free(keyBuff);
 	buffer_free(valueBuff);
 	buffer_free(headersAsJSONString);
+	free(rawHeaders);
+	rawHeaders = 0;
 	for(int h = 0; h < headerList->length; h++)
 	{
 		FIDO_FREE_HEADER(headerList->headers[h]);
