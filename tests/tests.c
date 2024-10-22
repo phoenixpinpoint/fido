@@ -53,24 +53,64 @@ int test_fido_get_check()
 	{
 		return 0;
 	} else {
-		//printf("Returned Status Code: %s\n", status);
 		return -1;
 	}
 	free(result);
+	free(status);
 	FIDO_CLEAN();
 }
 
 int test_fido_post_check()
 {
 	char* result = FIDO_FETCH("POST", "http://localhost:3000/simple", NULL, NULL);
-	printf("Result: %s\n", result);
-	if(strlen(result) > 1)//100 as picked based on most status codes in fido are less than 100 characters.
+	//printf(result);
+	JSON_Value* json = json_parse_string(result);
+	JSON_Object* obj = json_value_get_object(json);
+	char* status = json_object_get_string(obj, "code");
+	if(strcmp(json_object_get_string(obj, "code"), "200") == 0)
 	{
 		return 0;
 	} else {
 		return -1;
 	}
 	free(result);
+	free(status);
+	FIDO_CLEAN();
+}
+
+int test_fido_post_400_check()
+{
+	char* result = FIDO_FETCH("POST", "http://localhost:3000/complex", NULL, NULL);
+	//printf("Result: %s\n", result);
+	JSON_Value* json = json_parse_string(result);
+	JSON_Object* obj = json_value_get_object(json);
+	char* status = json_object_get_string(obj, "code");
+	if(strcmp(json_object_get_string(obj, "code"), "400") == 0)
+	{
+		return 0;
+	} else {
+		return -1;
+	}
+	free(result);
+	free(status);
+	FIDO_CLEAN();
+}
+
+int test_fido_post_body()
+{
+	char* result = FIDO_FETCH("POST", "http://localhost:3000/complex", "{\"Content-Type\": \"application/json\"}", "{\"name\":\"John\"}");
+	printf("Result: %s\n", result);
+	JSON_Value* json = json_parse_string(result);
+	JSON_Object* obj = json_value_get_object(json);
+	char* status = json_object_get_string(obj, "code");
+	if(strcmp(json_object_get_string(obj, "code"), "200") == 0)
+	{
+		return 0;
+	} else {
+		return -1;
+	}
+	free(result);
+	free(status);
 	FIDO_CLEAN();
 }
 
@@ -79,12 +119,14 @@ int main(void)
 {
 	printf("FIDO TESTS\n");
 	printf("====================\n");
-	printf("No Method Detection: %d\n", test_fido_no_method_check());
-	printf("Empty String Header Test: %d\n", test_fido_empty_string_header_object());
-	printf("Empty Header Test: %d\n", test_fido_empty_header_object());
-	printf("GET Check: %d\n", test_fido_get_check());
-	printf("POST Check: %d\n", test_fido_post_check());
-	printf("GET Check 2: %d\n", test_fido_get_check());
+	//printf("No Method Detection: %d\n", test_fido_no_method_check());
+	//printf("Empty String Header Test: %d\n", test_fido_empty_string_header_object());
+	//printf("Empty Header Test: %d\n", test_fido_empty_header_object());
+	//printf("GET Check: %d\n", test_fido_get_check());
+	//printf("POST Check: %d\n", test_fido_post_check());
+	//printf("GET Check 2: %d\n", test_fido_get_check());
+	//printf("POST 400 Check: %d\n", test_fido_post_400_check());
+	printf("POST Body Check: %d\n", test_fido_post_body());
 	FIDO_CLEAN();	
 
 	return 0;

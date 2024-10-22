@@ -34,9 +34,10 @@ void FIDO_CLEAN()
 size_t writeFunction(void *ptr, size_t size, size_t nmemb, void *stream) {
     size_t memNeeded = size*nmemb;
 	size_t previousSize;
-	//printf("PTR: %p\n", responseBody);
+	//printf(ptr);
 	if (!(void*)responseBody)
 	{
+		//printf("CREATING BUFFER\n");
 		previousSize = 0;
 		responseBody = malloc(memNeeded+1*sizeof(char));
 		if(!responseBody)
@@ -44,9 +45,9 @@ size_t writeFunction(void *ptr, size_t size, size_t nmemb, void *stream) {
 			return -1;
 		}
 		strncpy(responseBody, ptr, nmemb);
-		//printf("strlen %d\n", strlen(responseBody));
 	}
 	else {
+		//printf("RESIZING BUFFER\n");
 		previousSize = strlen(responseBody);
 		char* reallocBuffer = realloc(responseBody, (previousSize+nmemb+1)*sizeof(char));
 		if(!reallocBuffer)
@@ -64,15 +65,20 @@ size_t writeHeadersFunction(void *ptr, size_t size, size_t nmemb, void *stream) 
 	size_t previousSize;
 	if (!(void*)rawHeaders)
 	{
+		//printf("Creating Headers Buffer\n");
+		//printf("Headers: *%s*\n", ptr);
 		previousSize = 0;
 		rawHeaders = malloc(memNeeded+1*sizeof(char));
 		if(!rawHeaders)
 		{
 			return -1;
 		}
-		strncpy(rawHeaders, ptr, nmemb);
+		//TODO Figure out why the +1 is needed? Is it really becuase of the null terminator?
+		strncpy(rawHeaders, ptr, nmemb+1);//+1 to include the null terminator
+		//printf("**%s\n**", rawHeaders);
 	}
 	else {
+		//printf("Resizing Headers Buffer\n");
 		previousSize = strlen(rawHeaders);
 		char* reallocBuffer = realloc(rawHeaders, (previousSize+nmemb+1)*sizeof(char));
 		if(!reallocBuffer)
@@ -94,6 +100,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	CURL *curl;
   	CURLcode res;
 	responseBody = 0;
+	struct curl_slist *hs=NULL;
 
 	//printf("Checking for HTTP METOD\n");
 	//Do preemptive checks before doing cURL init.
@@ -112,6 +119,23 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 		{
 			return "HTTP_REQ_ERROR: failed to parse header json.";
 		}
+		JSON_Object *root_object = json_value_get_object(root);
+		const char *key;
+		const char *value;
+		size_t count = json_object_get_count(root_object);
+		//printf("Header Count: %d\n", count);
+		for (size_t i = 0; i < count; i++)
+		{
+			key = json_object_get_name(root_object, i);
+			value = json_object_get_string(root_object, key);
+			buffer_t* headerBuffer = buffer_new();
+			buffer_append(headerBuffer, key);
+			buffer_append(headerBuffer, ": ");
+			buffer_append(headerBuffer, value);
+			printf("Header: %s\n", headerBuffer->data);
+			hs = curl_slist_append(hs, "Content-Type: application/json");
+			buffer_free(headerBuffer);
+		}
 		json_value_free(root);
 	}
 	
@@ -123,8 +147,11 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
     curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeFunction);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, responseBody);
-    //curl_easy_setopt(curl, CURLOPT_HEADERDATA, "");
 	curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, writeHeadersFunction);
+	if(headers)
+	{
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, hs);
+	}
 
 	if(httpMethod && strcmp(httpMethod, "GET") == 0)
 	{
@@ -134,13 +161,15 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	{
 		//printf("POST\n");
 		curl_easy_setopt(curl, CURLOPT_POST, 1L);
-		//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+		//curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
+		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 		//HTTP makes a POST request with a body go to HTTP 100 CONTINUE, This allows us to skip that.
 		if (!body)
 		{
 			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "");
 		}
 		else {
+			//printf(body);
 			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body);
 		}	
 	}
@@ -149,7 +178,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 		//printf("PATCH\n");
 		curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PATCH");
 	}
-	else if(httpMethod && strcmp(httpMethod, "DELETE") ==0)
+	else if(httpMethod && strcmp(httpMethod, "DELETE") == 0)
 	{
 		//printf("DELETE\n");
 		curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
@@ -159,7 +188,6 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 		return "HTTP_REQ_ERROR: Invalid or No method specified.";		
 	}
 
-	//printf("Executing cURL Request\n");
     // Perform the request, res gets the return code 
     res = curl_easy_perform(curl);
 
@@ -318,7 +346,6 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	}
 	FIDO_FREE_HEADER_LIST(headerList);
 	free(tempBuffer);
-	//free(responseCodeAsString);
 
 	return serialized_string;
 }
