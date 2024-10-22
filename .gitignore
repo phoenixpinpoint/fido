@@ -77,5 +77,8 @@ survey.c
 surveyor
 
 *.wasm
-./tests/tests.js
-./tests/tests
+tests/tests.js
+tests/tests
+
+# Visual Studio Code
+.vscode/
