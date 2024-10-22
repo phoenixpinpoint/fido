@@ -132,7 +132,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 			buffer_append(headerBuffer, key);
 			buffer_append(headerBuffer, ": ");
 			buffer_append(headerBuffer, value);
-			printf("Header: %s\n", headerBuffer->data);
+			//printf("Header: %s\n", headerBuffer->data);
 			hs = curl_slist_append(hs, "Content-Type: application/json");
 			buffer_free(headerBuffer);
 		}
@@ -161,8 +161,11 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	{
 		//printf("POST\n");
 		curl_easy_setopt(curl, CURLOPT_POST, 1L);
+		
+		//Debugging Options
 		//curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
-		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+		//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+		
 		//HTTP makes a POST request with a body go to HTTP 100 CONTINUE, This allows us to skip that.
 		if (!body)
 		{
@@ -217,7 +220,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 		if(i == 0)
 		{
 			//printf("Processing Status Code\n");
-			printf("RAW HEADERS: %s\n", rawHeaders);
+			//printf("RAW HEADERS: %s\n", rawHeaders);
 			if(strncmp(rawHeaders, "HTTP/1.0", 8) == 0)
 			{
 				//printf("HTTP 1.0\n");
@@ -315,22 +318,17 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 		}
 	}
 
-	//printf("RAW HEADERS PROCESSED\n");
-	FIDO_PRINT_HEADER_LIST(headerList);
+	//FIDO_PRINT_HEADER_LIST(headerList);
 	buffer_t* headersAsJSONString = FIDO_JSONIFY_HEADERS(headerList);
-	//nitf("HEADERS %s\n", headersAsJSONString->data);
-	//printf("CONVERTING HEADERS TO JSON\n");
 	JSON_Value *responseJSON  = json_value_init_object();
 	JSON_Object *root_object = json_value_get_object(responseJSON);
 	json_object_set_string(root_object, "code", responseCodeAsString->data);
 	json_object_set_value(root_object, "headers", json_parse_string(headersAsJSONString->data));
 	json_object_set_string(root_object, "body", responseBody);
 
-	//printf("SERIALIZING HEADERS \n");
 	char *serialized_string = NULL;
 	serialized_string = json_serialize_to_string(responseJSON);
 	json_value_free(responseJSON);
-	//printf("REPLY AS STRING %s\n", serialized_string);
 
    	curl_easy_cleanup(curl);
 	buffer_free(keyBuff);
