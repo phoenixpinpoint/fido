@@ -1,5 +1,5 @@
 # Fido
-Fido provides JS Fetch API bindings in C for use in WASM. Additionally Fido provides a simple Header, Request and, Response API.
+Fido provides JS Fetch and libcurl API bindings in C for use in WASM. Additionally Fido provides a simple Header, Request and, Response API.
 
 ## Installation & Running
 ### clibs Installation
