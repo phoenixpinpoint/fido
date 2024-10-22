@@ -16,8 +16,11 @@ int test_fido_no_method_check()
 
 int test_fido_empty_string_header_object()
 {
-	char* result = FIDO_FETCH("GET", "https://google.com", "", NULL);
-	if (strcmp("HTTP_REQ_ERROR: failed to parse header json.", result) == 0)
+	char* result = FIDO_FETCH("GET", "https://www.google.com", "", NULL);
+	JSON_Value* json = json_parse_string(result);
+	JSON_Object* obj = json_value_get_object(json);
+	//printf("Result: %s\n", result);
+	if(json_object_get_number(obj, "code") ==  200)
 	{
 		return 0;
 	}
@@ -30,13 +33,16 @@ int test_fido_empty_string_header_object()
 
 int test_fido_empty_header_object()
 {
-	char* result = FIDO_FETCH("GET", "https://google.com", "{}", NULL);
-	if(strcmp("HTTP_REQ_ERROR: failed to parse header json.", result) == 0)
+	char* result = FIDO_FETCH("GET", "https://www.google.com", "{}", NULL);
+	JSON_Value* json = json_parse_string(result);
+	JSON_Object* obj = json_value_get_object(json);
+	//printf("Result: %s\n", result);
+	if(json_object_get_number(obj, "code") ==  200)
 	{
-		return -1;
+		return 0;
 	}
 	else {
-		return 0;
+		return -1;
 	}
 	free(result);
 	FIDO_CLEAN();
@@ -141,11 +147,11 @@ int test_fido_delete()
 int test_fido_post_with_f_headers()
 {
 	FIDO_HEADER* header = FIDO_CREATE_HEADER("Content-Type", "application/json");
+	FIDO_HEADER* header2 = FIDO_CREATE_HEADER("Authorization", "Bearer 1234");
 	FIDO_HEADERLIST* list = FIDO_CREATE_HEADER_LIST();
 	FIDO_ADD_HEADER(list, header);
-	FIDO_PRINT_HEADER_LIST(list);
+	FIDO_ADD_HEADER(list, header2);
 	char* result = FIDO_FETCH("POST", "http://localhost:3000/complex", FIDO_JSONIFY_HEADERS(list)->data, "{\"name\":\"John\"}");
-	//printf("Result: %s\n", result);
 	JSON_Value* json = json_parse_string(result);
 	JSON_Object* obj = json_value_get_object(json);
 	if(json_object_get_number(obj, "code") ==  200)

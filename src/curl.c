@@ -110,33 +110,41 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	}
 
 	//printf("Checking for Headers\n");
+	//printf("HEADERS: %s\n", headers);
 	//If there are headers
 	if(headers)
 	{
-		JSON_Value *root = json_parse_string(headers);
-		if(json_value_get_type(root) != JSONArray)
+		if (strcmp(headers, "{}") != 0 && strcmp(headers, "") != 0)
 		{
-			return "HTTP_REQ_ERROR: failed to parse header json.";
+			printf("Parsing Headers\n");
+			JSON_Value *root = json_parse_string(headers);
+			if(json_value_get_type(root) != JSONObject)
+			{
+				return "HTTP_REQ_ERROR: failed to parse header json.";
+			}
+			JSON_Array *root_object = json_value_get_object(root);
+			char* headerString = json_serialize_to_string(root);
+			char *key;
+			char *value;
+			size_t count = json_object_get_count(root_object);
+			for (size_t i = 0; i < count; i++)
+			{
+				key = json_object_get_name(root_object, i);
+				value = json_object_get_string(root_object, key);
+
+				buffer_t* headerBuffer = buffer_new();
+				buffer_append(headerBuffer, key);
+				buffer_append(headerBuffer, ": ");
+				buffer_append(headerBuffer, value);
+				hs = curl_slist_append(hs, headerBuffer->data);
+				buffer_free(headerBuffer);
+			}
+			json_value_free(root);
 		}
-		JSON_Array *root_object = json_value_get_array(root);
-		const char *key;
-		const char *value;
-		size_t count = json_array_get_count(root_object);
-		//printf("Header Count: %d\n", count);
-		for (size_t i = 0; i < count; i++)
-		{
-			JSON_Object *header_object = json_array_get_object(root_object, i);
-			key = json_object_get_name(header_object, i);
-			value = json_object_get_string(header_object, key);
-			buffer_t* headerBuffer = buffer_new();
-			buffer_append(headerBuffer, key);
-			buffer_append(headerBuffer, ": ");
-			buffer_append(headerBuffer, value);
-			//printf("Header: %s\n", headerBuffer->data);
-			hs = curl_slist_append(hs, headerBuffer->data);
-			buffer_free(headerBuffer);
+		else{
+			// /printf("Empty Headers\n");
 		}
-		json_value_free(root);
+
 	}
 	
 	//printf("Initializeing cURL\n");
@@ -148,7 +156,8 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeFunction);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, responseBody);
 	curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, writeHeadersFunction);
-	if(headers)
+	
+	if(hs)
 	{
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, hs);
 	}

@@ -9,6 +9,7 @@ void FIDO_CLEAN()
 
 EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char* body), {
   let init = {};//HTTP Init Object
+  init["headers"] = {};//HTTP Headers Object
 
   let buffer;
 
@@ -20,24 +21,44 @@ EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char
   else//if not return an error.
   {  
   	let messageBuffer = intArrayFromString("HTTP_REQ_ERROR: Invalid or No method specified.");
-	let returnMessage = Module._malloc(2*messageBuffer.length);
-	Module.HEAPU8.set(messageBuffer, returnMessage);
+	  let returnMessage = Module._malloc(2*messageBuffer.length);
+	  Module.HEAPU8.set(messageBuffer, returnMessage);
    	return returnMessage;	
   }
 
   //If headers are supplied
-  if (headers)
+  let castedHeaders = UTF8ToString(headers);
+  if (castedHeaders && castedHeaders != "" && castedHeaders != "{}")
   {
+    //let rawHeaders = await UTF8ToString(headers);
+    let parsedHeaders = JSON.parse(castedHeaders);
     try {//Try to parse them into a json object.
-      init["headers"] = JSON.parse(UTF8ToString(headers));
+        if(Array.isArray(parsedHeaders))
+        {
+          parsedHeaders.forEach((header) => {
+            //console.log("JS Header: " + JSON.stringify(header));
+            let key = Object.keys(header)[0];
+            let value = header[key];
+            let headerObject = {};
+            headerObject[key] = value;
+            //console.log("Key " + key + " Value: " + value);
+            Object.assign(init["headers"], headerObject);
+          });
+        }
+        else
+        {
+          init["headers"] = parsedHeaders;
+        }
+        
     }
-    catch {
+    catch (e) {
       //If parsing fails send an error
       //This block should be a helper function in JS
-	  let messageBuffer = intArrayFromString("HTTP_REQ_ERROR: failed to parse header json.");
-	  let returnMessage = Module._malloc(2*messageBuffer.length);
-	  Module.HEAPU8.set(messageBuffer, returnMessage);
-	  return returnMessage;
+      console.log("JS: Error Parsing Headers: " + e); 
+	    let messageBuffer = intArrayFromString("HTTP_REQ_ERROR: failed to parse header json.");
+	    let returnMessage = Module._malloc(2*messageBuffer.length);
+	    Module.HEAPU8.set(messageBuffer, returnMessage);
+	    return returnMessage;
     }
   }
 
@@ -64,6 +85,7 @@ EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char
 
   //Store the body as text
   let responseBody = await rawResponse.text();
+  //console.log(responseBody);
 
   //Build our response object
   let responseObject = {};
