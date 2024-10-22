@@ -149,6 +149,24 @@ int test_fido_delete()
 	FIDO_CLEAN();
 }
 
+int test_fido_post_with_f_headers()
+{
+	FIDO_HEADER* header = FIDO_CREATE_HEADER("Content-Type", "application/json");
+	FIDO_HEADERLIST* list = FIDO_CREATE_HEADER_LIST();
+	FIDO_ADD_HEADER(list, header);
+	char* result = FIDO_FETCH("POST", "http://localhost:3000/complex", FIDO_JSONIFY_HEADERS(list)->data, "{\"name\":\"John\"}");
+	//printf("Result: %s\n", result);
+	JSON_Value* json = json_parse_string(result);
+	JSON_Object* obj = json_value_get_object(json);
+	char* status = json_object_get_string(obj, "code");
+	if(strcmp(json_object_get_string(obj, "code"), "200") == 0)
+	{
+		return 0;
+	} else {
+		return -1;
+	}
+}
+
 int main(void)
 {
 	printf("FIDO TESTS\n");
@@ -163,6 +181,7 @@ int main(void)
 	printf("POST Body Check: %d\n", test_fido_post_body());
 	printf("PATCH Check: %d\n", test_fido_patch());
 	printf("DELETE Check: %d\n", test_fido_delete());
+	printf("POST Fido Headers: %d\n", test_fido_post_with_f_headers());
 	FIDO_CLEAN();	
 
 	return 0;
