@@ -7,3 +7,5 @@ ctest:
 cvalgrind: 
 	gcc -D USE_LIBCURL -Ideps -Isrc ./survey.c src/fido.c src/headers.c src/request.c src/response.c ./tests/tests.c -o ./tests/tests -lcurl; valgrind --leak-check=full --show-leak-kinds=all ./tests/tests
 
+clean:
+	rm -f ./tests/tests ./tests/tests.js ./tests/tests.wasm
