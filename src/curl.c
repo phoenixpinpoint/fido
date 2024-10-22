@@ -114,19 +114,20 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	if(headers)
 	{
 		JSON_Value *root = json_parse_string(headers);
-		if(json_value_get_type(root) != JSONObject)
+		if(json_value_get_type(root) != JSONArray)
 		{
 			return "HTTP_REQ_ERROR: failed to parse header json.";
 		}
-		JSON_Object *root_object = json_value_get_object(root);
+		JSON_Array *root_object = json_value_get_array(root);
 		const char *key;
 		const char *value;
-		size_t count = json_object_get_count(root_object);
+		size_t count = json_array_get_count(root_object);
 		//printf("Header Count: %d\n", count);
 		for (size_t i = 0; i < count; i++)
 		{
-			key = json_object_get_name(root_object, i);
-			value = json_object_get_string(root_object, key);
+			JSON_Object *header_object = json_array_get_object(root_object, i);
+			key = json_object_get_name(header_object, i);
+			value = json_object_get_string(header_object, key);
 			buffer_t* headerBuffer = buffer_new();
 			buffer_append(headerBuffer, key);
 			buffer_append(headerBuffer, ": ");
