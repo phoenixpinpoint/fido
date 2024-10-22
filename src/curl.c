@@ -293,7 +293,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	//nitf("HEADERS %s\n", headersAsJSONString->data);
 	//printf("CONVERTING HEADERS TO JSON\n");
 	JSON_Value *responseJSON  = json_value_init_object();
-	JSON_Object *root_object = json_value_get_object(responseJSON);	
+	JSON_Object *root_object = json_value_get_object(responseJSON);
 	json_object_set_string(root_object, "code", responseCodeAsString->data);
 	json_object_set_value(root_object, "headers", json_parse_string(headersAsJSONString->data));
 	json_object_set_string(root_object, "body", responseBody);
@@ -310,6 +310,8 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	buffer_free(headersAsJSONString);
 	free(rawHeaders);
 	rawHeaders = 0;
+	free(responseBody);
+	responseBody = 0;
 	for(int h = 0; h < headerList->length; h++)
 	{
 		FIDO_FREE_HEADER(headerList->headers[h]);

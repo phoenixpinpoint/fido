@@ -11,6 +11,7 @@ int test_fido_no_method_check()
 		return -1;
 	}
 	free(result);
+	FIDO_CLEAN();
 }
 
 int test_fido_empty_string_header_object()
@@ -24,6 +25,7 @@ int test_fido_empty_string_header_object()
 		return -1;
 	}
 	free(result);
+	FIDO_CLEAN();
 }
 
 int test_fido_empty_header_object()
@@ -61,6 +63,7 @@ int test_fido_get_check()
 int test_fido_post_check()
 {
 	char* result = FIDO_FETCH("POST", "http://localhost:3000/simple", NULL, NULL);
+	printf("Result: %s\n", result);
 	if(strlen(result) > 1)//100 as picked based on most status codes in fido are less than 100 characters.
 	{
 		return 0;
