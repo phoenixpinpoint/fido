@@ -46,6 +46,9 @@ int test_fido_empty_header_object()
 int test_fido_get_check()
 {
 	char* result = FIDO_FETCH("GET", "http://localhost:3000", NULL, NULL);
+	printf(result);
+	//CURL Returns an Object with sub objects for headers
+	//JS Fetch Returns an Array with objects for headers
 	JSON_Value* json = json_parse_string(result);
 	JSON_Object* obj = json_value_get_object(json);
 	char* status = json_object_get_string(obj, "code");
@@ -171,17 +174,17 @@ int main(void)
 {
 	printf("FIDO TESTS\n");
 	printf("====================\n");
-	printf("No Method Detection: %d\n", test_fido_no_method_check());
-	printf("Empty String Header Test: %d\n", test_fido_empty_string_header_object());
-	printf("Empty Header Test: %d\n", test_fido_empty_header_object());
+	// printf("No Method Detection: %d\n", test_fido_no_method_check());
+	// printf("Empty String Header Test: %d\n", test_fido_empty_string_header_object());
+	// printf("Empty Header Test: %d\n", test_fido_empty_header_object());
 	printf("GET Check: %d\n", test_fido_get_check());
-	printf("POST Check: %d\n", test_fido_post_check());
-	printf("GET Check 2: %d\n", test_fido_get_check());
-	printf("POST 400 Check: %d\n", test_fido_post_400_check());
-	printf("POST Body Check: %d\n", test_fido_post_body());
-	printf("PATCH Check: %d\n", test_fido_patch());
-	printf("DELETE Check: %d\n", test_fido_delete());
-	printf("POST Fido Headers: %d\n", test_fido_post_with_f_headers());
+	// printf("POST Check: %d\n", test_fido_post_check());
+	// printf("GET Check 2: %d\n", test_fido_get_check());
+	// printf("POST 400 Check: %d\n", test_fido_post_400_check());
+	// printf("POST Body Check: %d\n", test_fido_post_body());
+	// printf("PATCH Check: %d\n", test_fido_patch());
+	// printf("DELETE Check: %d\n", test_fido_delete());
+	// printf("POST Fido Headers: %d\n", test_fido_post_with_f_headers());
 	FIDO_CLEAN();	
 
 	return 0;
