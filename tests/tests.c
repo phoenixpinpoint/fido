@@ -176,6 +176,21 @@ int test_fido_response_json()
 	}
 }
 
+int test_fido_redirect()
+{
+	char* result = FIDO_FETCH("GET", "http://google.com", NULL, NULL);
+	//printf("Result: %s\n", result);
+	JSON_Value* json = json_parse_string(result);
+	JSON_Object* obj = json_value_get_object(json);
+	//printf("CODE: %d\n", json_object_get_number(obj, "code"));
+	if(json_object_get_number(obj, "code") ==  200)
+	{
+		return 0;
+	} else {
+		return -1;
+	}
+}
+
 int main(void)
 {
 	printf("FIDO TESTS\n");
@@ -192,6 +207,7 @@ int main(void)
 	printf("DELETE Check: %d\n", test_fido_delete());
 	printf("POST Fido Headers: %d\n", test_fido_post_with_f_headers());
 	printf("Response JSON: %d\n", test_fido_response_json());
+	printf("Redirect: %d\n", test_fido_redirect());
 	FIDO_CLEAN();	
 
 	return 0;

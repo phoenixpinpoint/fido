@@ -54,7 +54,7 @@ EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char
     catch (e) {
       //If parsing fails send an error
       //This block should be a helper function in JS
-      console.log("JS: Error Parsing Headers: " + e); 
+      //console.log("JS: Error Parsing Headers: " + e); 
 	    let messageBuffer = intArrayFromString("HTTP_REQ_ERROR: failed to parse header json.");
 	    let returnMessage = Module._malloc(2*messageBuffer.length);
 	    Module.HEAPU8.set(messageBuffer, returnMessage);
@@ -68,7 +68,6 @@ EM_ASYNC_JS(char*, FIDO_FETCH, (char *httpMethod, char *url, char *headers, char
     init["body"] = UTF8ToString(body);
   }
 
-  //Call fetch
   let rawResponse = await fetch(UTF8ToString(url), init);
 
   

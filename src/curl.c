@@ -11,7 +11,7 @@
 #define LF 10
 #define CR 13
 #define SPACE 32
-#define QOUTE 34
+#define QUOTE 34
 #define COLON 58
 
 char* responseBody;
@@ -61,7 +61,7 @@ size_t writeFunction(void *ptr, size_t size, size_t nmemb, void *stream) {
 }
 
 size_t writeHeadersFunction(void *ptr, size_t size, size_t nmemb, void *stream) {
-    size_t memNeeded = size*nmemb;
+	size_t memNeeded = size*nmemb;
 	size_t previousSize;
 	if (!(void*)rawHeaders)
 	{
@@ -116,7 +116,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	{
 		if (strcmp(headers, "{}") != 0 && strcmp(headers, "") != 0)
 		{
-			printf("Parsing Headers\n");
+			//printf("Parsing Headers\n");
 			JSON_Value *root = json_parse_string(headers);
 			if(json_value_get_type(root) != JSONObject)
 			{
@@ -156,6 +156,9 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeFunction);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, responseBody);
 	curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, writeHeadersFunction);
+	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+	
+	//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 	
 	if(hs)
 	{
@@ -189,6 +192,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	{
 		//printf("PATCH\n");
 		curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PATCH");
+		//TODO Added Body Handling
 	}
 	else if(httpMethod && strcmp(httpMethod, "DELETE") == 0)
 	{
@@ -220,6 +224,42 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	FIDO_HEADER* tempHeader = 0;
 	buffer_t* responseCodeAsString;
 	char* tempBuffer;
+
+	//printf("RAW HEADERS: %s\n", rawHeaders);
+
+	//Handling for Redirect Headers
+	//Split the Headers on \n\n and take the last one.
+	char* lastSubstring = "\0";
+	char* subString = strstr(rawHeaders, "\r\n\r\n");
+	//If there are multiple headers, we want the last one.
+	//printf("SUBSTRING: %s\n", subString);
+	//printf("LEN: %d\n", strlen(subString));
+	if (subString == NULL || strlen(subString) <= 4)
+	{
+		//DO NOTHING FOR NOW
+		//printf("SINGLE HEADER DETECTED\n");
+	}
+	else {
+		subString += 4; // Move past the \r\n\r\n
+		lastSubstring = subString;
+		while (subString != NULL && strlen(subString) > 4)
+		{
+			subString = strstr(subString, "\r\n\r\n");
+			subString += 4; // Move past the \r\n\r\n
+			if(subString && strlen(subString) > 0)
+			{
+				lastSubstring = subString;
+			}
+		}	
+	}
+
+	//printf("RAW HEADERS: %s\n", rawHeaders);
+	if (lastSubstring != NULL && strlen(lastSubstring) > 0)
+	{
+		char* originalRawHeaders = rawHeaders;
+		rawHeaders = strdup(lastSubstring);
+		free(originalRawHeaders);
+	}
 
 	//printf("RAW HEADERS: %s\n", rawHeaders);
 
@@ -305,7 +345,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 			//printf("LN DETECTED!\n");
 			//Do Nothing as this is a LINE
 		}
-		else if((int)rawHeaders[i] == QOUTE)
+		else if((int)rawHeaders[i] == QUOTE)
 		{
 			buffer_append(valueBuff, "\\\"");
 		}
@@ -332,6 +372,7 @@ char* FIDO_FETCH(char *httpMethod, char *url, char* headers, char* body)
 	JSON_Value *responseJSON  = json_value_init_object();
 	JSON_Object *root_object = json_value_get_object(responseJSON);
 	double responseCode = atof(responseCodeAsString->data);
+	//printf("RESPONSE CODE: %f\n", responseCode);
 	json_object_set_number(root_object, "code", responseCode);
 	json_object_set_value(root_object, "headers", json_parse_string(headersAsJSONString->data));
 	json_object_set_string(root_object, "body", responseBody);
