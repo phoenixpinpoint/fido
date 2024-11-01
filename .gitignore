@@ -82,3 +82,5 @@ tests/tests
 
 # Visual Studio Code
 .vscode/
+
+surveyor.log
