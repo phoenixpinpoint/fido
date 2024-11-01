@@ -27,10 +27,17 @@ FIDO_HTTP_RESPONSE* FIDO_CREATE_HTTP_RESPONSE(int response_code, char* body, FID
 FIDO_HTTP_RESPONSE* FIDO_CREATE_HTTP_RESPONSE_FROM_JSON(char* json)
 {
     JSON_Value* jsonValue = json_parse_string(json);
+    if (jsonValue == NULL)
+    {
+        return NULL;
+    }
     JSON_Object* jsonObject = json_value_get_object(jsonValue);
 
     int response_code = json_object_get_number(jsonObject, "code");
-    char* body = json_object_get_string(jsonObject, "body");
+    char* body_buffer = json_object_get_string(jsonObject, "body");
+    //TODO convert this to calloc and strncpy.
+    char* body = strcpy((char*)malloc(strlen(body_buffer)+1*sizeof(char)), body_buffer);
+
     FIDO_HEADERLIST* headers = FIDO_CREATE_HEADER_LIST();
 
     JSON_Object* headerObject = json_object_get_object(jsonObject, "headers");
