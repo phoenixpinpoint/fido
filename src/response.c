@@ -35,8 +35,7 @@ FIDO_HTTP_RESPONSE* FIDO_CREATE_HTTP_RESPONSE_FROM_JSON(char* json)
 
     int response_code = json_object_get_number(jsonObject, "code");
     char* body_buffer = json_object_get_string(jsonObject, "body");
-    //TODO convert this to calloc and strncpy.
-    char* body = strcpy((char*)malloc(strlen(body_buffer)+1*sizeof(char)), body_buffer);
+    char* body = memcpy((char*)calloc(strlen(body_buffer)+1, sizeof(char)), body_buffer, strlen(body_buffer)+1);
 
     FIDO_HEADERLIST* headers = FIDO_CREATE_HEADER_LIST();
 
